@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebApplication1.Data;
 using WebApplication1.Models;
 using WebApplication1.Models.Entities;
@@ -17,24 +18,29 @@ namespace WebApplication1.Controllers
             this.dbContext = dbContext;
             this.dbContext = dbContext;
         }
+
+
+
         [HttpGet]
         public IActionResult GetAllEmployees()
         {
-            var employees =dbContext.Employees.ToList();
+            var employees = dbContext.Employees.ToList();
             return Ok(employees);
         }
+
 
         [HttpGet]
         [Route("{id:guid}")]
         public IActionResult GetEmployeeById(Guid id)
         {
             var employee = dbContext.Employees.Find(id);
-            if(employee is null)
+            if (employee is null)
             {
                 return NotFound();
             }
             return Ok(employee);
         }
+
 
         [HttpPost]
         public IActionResult AddEmployee(AddEmployeeDto addEmployeeDto)
@@ -50,6 +56,7 @@ namespace WebApplication1.Controllers
             dbContext.SaveChanges();
             return Created();
         }
+
 
         [HttpPut]
         [Route("{id:guid}")]
@@ -67,5 +74,21 @@ namespace WebApplication1.Controllers
             dbContext.SaveChanges();
             return Ok(employee);
         }
+
+
+        [HttpDelete]
+        [Route("{id:guid}")]
+        public IActionResult DeleteEmployee(Guid id)
+        {
+            var employee = dbContext.Employees.Find(id);
+            if (employee is null)
+            {
+                return NotFound();
+            }
+            dbContext.Employees.Remove(employee);
+            dbContext.SaveChanges();
+            return Ok();
+        }
     }
+
 }
