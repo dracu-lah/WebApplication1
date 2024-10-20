@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication1.Data;
+using WebApplication1.Models;
+using WebApplication1.Models.Entities;
 
 namespace WebApplication1.Controllers
 {
@@ -20,6 +22,21 @@ namespace WebApplication1.Controllers
         {
             var employees =dbContext.Employees.ToList();
             return Ok(employees);
+        }
+
+        [HttpPost]
+        public IActionResult AddEmployee(AddEmployeeDto addEmployeeDto)
+        {
+            var employeeEntity = new Employee()
+            {
+                Name = addEmployeeDto.Name,
+                Email = addEmployeeDto.Email,
+                Phone = addEmployeeDto.Phone,
+                Salary = addEmployeeDto.Salary,
+            };
+            dbContext.Employees.Add(employeeEntity);
+            dbContext.SaveChanges();
+            return Created();
         }
     }
 }
